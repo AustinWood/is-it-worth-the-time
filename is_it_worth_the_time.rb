@@ -1,14 +1,16 @@
-puts "How often do you do the task?"
-puts "Give answer in days. ('7' = once per week. '1/5' = 5x/day)"
-frequency = gets.chomp
-frequency_seconds = frequency.to_i * 60 * 60 * 24
+require 'time'
 
-puts "How long will you continue doing this task?"
+puts "How often do you do the task?"
+puts "Give answer in days. ('7' = once per week. '0.2' = 5x/day)"
+frequency = gets.chomp
+frequency_seconds = frequency.to_f * 60 * 60 * 24
+
+puts "\nHow long will you continue doing this task?"
 puts "d = days, w = weeks, m = months, y = years"
 lifetime = gets.chomp
 
 lifetime_unit = lifetime[-1]
-lifetime_seconds = lifetime[0...-1].to_i
+lifetime_seconds = lifetime[0...-1].to_f
 
 case lifetime_unit
 when "d"
@@ -23,12 +25,12 @@ else
   puts "You entered an invalid unit of time, dummy"
 end
 
-puts "How much time could you save by automating?"
+puts "\nHow much time could you save by automating?"
 puts "s = seconds, m = minutes, h = hours"
 time = gets.chomp
 
 time_unit = time[-1]
-time_seconds = time[0...-1].to_i
+time_seconds = time[0...-1].to_f
 
 case time_unit
 when "s"
@@ -56,4 +58,20 @@ end
 
 result_str += " automating this task."
 
+puts ""
 puts result_str
+puts ""
+puts "Type 'q' to quit, or anything else to save this calculation to log.txt"
+
+response = gets.chomp
+
+unless response == "q"
+  open('log.txt', 'a') do |f|
+    f.puts Time.now.utc.iso8601
+    f.puts response
+    f.puts "Every #{frequency} days over the next #{lifetime}. Save #{time} per event."
+    f.puts result_str
+    f.puts "\n"
+  end
+  puts "Logged!"
+end
